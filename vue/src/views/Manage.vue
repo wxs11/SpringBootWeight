@@ -33,8 +33,8 @@
 
 <script>
 // @ is an alias to /src
-import AsideVue from '../components/Aside.vue';
-import HeaderVue from '../components/Header.vue';
+import AsideVue from '../components/Aside.vue'
+import HeaderVue from '../components/Header.vue'
 
 
 export default {

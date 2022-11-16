@@ -157,7 +157,7 @@ export default {
     //将料号类型设定为默认PP
     this.form.type = this.typeOptions[0].value;
     //每隔1500毫秒获取一次重量数据
-    // setInterval(this.getAcWT,1500)
+    setInterval(this.getAcWT,1500)
   },
 
   //对acWt 实际重量进行实时监听 如果变化则判断
