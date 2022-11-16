@@ -84,7 +84,7 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="标准重量区间：">
+          <el-form-item label="标准重量区间：" prop="min" >
             <el-input v-model="form.min" disabled style="width: 150px">
               <template slot="append">G</template>
             </el-input>
@@ -136,6 +136,7 @@ export default {
       },
       rules: {
         gd: [{required: true, message: "请扫描工单", trigger: "blur"}],
+        min: [{required: true, message: "请选择数据", trigger: "blur"}],
       },
       typeOptions: [
         {
@@ -192,10 +193,10 @@ export default {
   },
   methods: {
     save(form) {     //保存数据
-                     // console.log(this.form);
+
       this.$refs[form].validate((valid) => {
         if (valid) {
-          if (this.form.checkFlag != null) {
+          if (this.form.checkFlag !="undefined" || this.form.checkFlag != null || this.form.checkFlag !="" ) {
             this.request.post("/home/save", this.form).then((res) => {
               if (res.code != 201) {
                 this.$notify({
