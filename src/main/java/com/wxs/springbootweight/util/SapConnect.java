@@ -26,7 +26,7 @@ public class SapConnect {
 			JCoParameterList input = function.getImportParameterList();
 			input.setValue("WERKS", "9999");
 			input.setValue("WCENT", "其他");
-			input.setValue("AUFNR", "1345");
+			input.setValue("AUFNR", gd);
 			function.execute(destination); // 执行连接
 
 
