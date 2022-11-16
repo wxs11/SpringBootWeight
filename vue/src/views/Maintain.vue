@@ -1,13 +1,6 @@
 <template>
   <div>
     <div style="margin: 10px 0">
-      <!-- <el-input
-              style="width: 200px"
-              placeholder="请输入类型"
-              clearable
-              v-model="type"
-              @input="change($event)"
-            ></el-input> -->
       <el-input
           v-model="ppType"
           class="ml-5"
@@ -55,7 +48,6 @@
               border
               stripe
               style="width: 100%">
-      <!-- <el-skeleton :rows="6"  animated /> -->
       <el-table-column
           align="center"
           label="序号"
@@ -205,6 +197,7 @@ export default {
     this.load();
   },
   methods: {
+    //加载查询数据
     load() {
       this.loading = true
       this.request
@@ -216,15 +209,14 @@ export default {
             },
           })
           .then((res) => {
-            console.log(res);
             this.tableData = res.data.records;
             this.total = res.data.total;
             this.loading = false
           });
     },
+    //修改数据
     save() {
       this.request.post("/msg/save", this.form).then((res) => {
-        // console.log(this.form);
         if (res) {
           this.$notify({
             title: "成功",
@@ -241,6 +233,7 @@ export default {
         }
       });
     },
+    // 清空查询输入框
     reset() {
       this.ppType = "";
     },
@@ -248,6 +241,7 @@ export default {
       this.form = JSON.parse(JSON.stringify(row));
       this.dialogFormVisible = true;
     },
+    //删除数据
     handleDelete(id) {
       this.request.delete("msg/deleteById/" + id).then((res) => {
         if (res) {
@@ -268,19 +262,21 @@ export default {
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
       this.load();
-      console.log(`每页 ${pageSize} 条`);
+      // console.log(`每页 ${pageSize} 条`);
     },
     handleCurrentChange(pageNum) {
       this.pageNum = pageNum;
       this.load();
-      console.log(`当前页: ${pageNum}`);
+      // console.log(`当前页: ${pageNum}`);
     },
     change(e) {
       this.$forceUpdate(e);
     },
+    // 导出数据
     expMsg() {
       window.open("http://localhost:9090/msg/exMsg");
     },
+    // 导入
     handleExcelImportSuccess() {
       this.$notify({
         title: "成功",

@@ -193,7 +193,6 @@ export default {
   },
   methods: {
     save(form) {     //保存数据
-
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.form.checkFlag !="undefined" || this.form.checkFlag != null || this.form.checkFlag !="" ) {
@@ -222,7 +221,6 @@ export default {
     },
     //获取sap对应工单数据
     enterClick() {
-      // console.log(this.form.gd)
       this.request
           .get("/home/sap", {
             params: {
@@ -247,9 +245,7 @@ export default {
     },
     //查询对应料号的重量区间
     handlePPType() {
-      // this.form.ppType = "";
       if (this.form.type === "2") {
-        // console.log("料号：", this.form.pin);
         this.dis = true;
         this.request
             .get("/msg/getBzWt", {
@@ -259,8 +255,6 @@ export default {
               },
             })
             .then((res) => {
-              // console.log("料号结果：", res);
-              // console.log("料号结果长度：", res.data.length);
               if (res.data.length === 0) {
                 this.form.min = "";
                 this.form.max = "";
@@ -320,28 +314,9 @@ export default {
           });
     },
     getAcWT() {
-      var test = parseInt(this.form.acWt)
-      // console.log('test:',test)
       this.request.get("/msg/getAcWt").then((res) => {
         this.form.acWt = res.data
-        // var save = parseInt(this.form.acWt)
-        // console.log('acWt:',this.form.acWt)
-        // if (save != test) {
-        //   var min = parseInt(this.form.min);
-        //   var max = parseInt(this.form.max);
-        //   var acWt = parseInt(this.form.acWt);
-        //   if (acWt >= min && acWt <= max) {
-        //     this.$message({
-        //       message: "重量符合要求",
-        //       type: "success",
-        //     });
-        //   } else {
-        //     this.$message({
-        //       message: "重量不符要求",
-        //       type: "warning",
-        //     });
-        //   }
-        // }
+        
       });
     },
   },

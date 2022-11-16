@@ -170,13 +170,14 @@ export default {
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
       this.load();
-      console.log(`每页 ${pageSize} 条`);
+      // console.log(`每页 ${pageSize} 条`);
     },
     handleCurrentChange(pageNum) {
       this.pageNum = pageNum;
       this.load();
-      console.log(`当前页: ${pageNum}`);
+      // console.log(`当前页: ${pageNum}`);
     },
+    //加载数据 查询
     load() {
       this.loading = true
       this.request
@@ -191,46 +192,32 @@ export default {
             },
           })
           .then((res) => {
-            console.log(res)
             this.tableData = res.data.records;
             this.total = res.data.total;
             this.loading = false
           });
     },
+    // 清空搜索框
     reset() {
       this.gd = "";
       this.pin = "";
       this.startTime = "";
       this.endTime = "";
     },
-    search() {
-      this.request
-          .get("/home/findCriteria", {
-            params: {
-              pageNum: this.pageNum,
-              pageSize: this.pageSize,
-              gd: this.gd,
-              pin: this.pin,
-              startTime: this.startTime,
-              endTime: this.endTime,
-            },
-          })
-          .then((res) => {
-            this.tableData = res.data.records;
-            this.total = res.data.records.length;
-          });
-    },
     change(e) {
       this.$forceUpdate(e);
     },
+    //保存时间数据
     saveTime(ctime) {
       this.ctime = ctime;
       this.startTime = ctime[0];
       this.endTime = ctime[1];
     },
+    // 导出
     exportMsg() {
       window.open("http://localhost:9090/home/exHistory")
     },
+    // 设置数据为NG的显示状态
     tableRowClassName(row) {
       if (row.row.checkFlag === "NG") {
         return 'warning-row';
