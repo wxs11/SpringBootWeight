@@ -1,0 +1,95 @@
+package ${package.Controller};
+
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.wxs.springbootweight.entity.ResultVO;
+import com.wxs.springbootweight.util.ResultUtil;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+
+import ${package.Service}.${service};
+import ${package.Entity}.${entity};
+
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+    #if(${superControllerClass})
+    public class ${table.controllerName} extends ${superControllerClass} {
+    #else
+    public class ${table.controllerName} {
+    #end
+@Resource
+private ${table.serviceName} ${table.entityPath}Service;
+
+
+/**
+ * description: 新增或修改
+ **/
+@PostMappingi("/save")
+public ResultVO<Boolean> save(@RequestBody ${entity} ${table.entityPath}){
+        boolean re= ${table.entityPath}Service.saveOrUpdateMsg(${table.entityPath});
+        if(re){
+        return ResultUtil.success(re);
+        }
+        return ResultUtil.error();
+        }
+
+/**
+ * description: 根据id删除
+ * @param: id
+ * @return:
+ **/
+@DeleteMapping("/{id}")
+public ResultVO<Boolean> deleteByid(@PathVariable Integer id){
+        boolean re= ${table.entityPath}Service.removeById(id);
+        if(re){
+        return ResultUtil.success(re);
+        }
+        return ResultUtil.error();
+        }
+
+@GetMapping
+public List<${entity}> findAll(){
+        return ${table.entityPath}Service.list();
+        }
+
+@GetMapping("/{id}")
+public List<${entity}> findOne(@PathVariable Integer id){
+        return ${table.entityPath}Service.list();
+        }
+
+@GetMapping("/findPage")
+public Page<${entity}> findPage(@RequestParam Integer pageNum,
+@RequestParam Integer pageSize){
+        return ${table.entityPath}Service.page(new Page<>(pageNum,pageSize));
+        }
+        }
+
+#end

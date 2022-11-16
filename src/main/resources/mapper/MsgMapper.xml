@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wxs.springbootweight.mapper.MsgMapper">
+
+    <resultMap id="BaseResultMap" type="com.wxs.springbootweight.entity.Msg">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="ppType" column="ppType" jdbcType="VARCHAR"/>
+        <result property="size" column="size" jdbcType="VARCHAR"/>
+        <result property="rc" column="rc" jdbcType="VARCHAR"/>
+        <result property="min" column="min" jdbcType="DOUBLE"/>
+        <result property="max" column="max" jdbcType="DOUBLE"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type,ppType,size,
+        rc,min,max
+    </sql>
+    <select id="getPPMaps" resultType="java.util.Map">
+        select id, ppType, rc
+        from msg
+        where type = '1'
+          and size = #{size}
+    </select>
+    <select id="getBzWt" resultType="com.wxs.springbootweight.entity.Msg">
+        select ppType,rc,min,max
+        from msg
+        <where>
+            <if test="id != null and id !='' ">
+                and id = #{id}
+            </if>
+            <if test="pin != null and pin !='' ">
+                and ppType = #{pin}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wxs.springbootweight.mapper.WeightHomeMapper">
+
+    <resultMap id="BaseResultMap" type="com.wxs.springbootweight.entity.WeightHome">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gd" column="gd" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="pin" column="pin" jdbcType="VARCHAR"/>
+        <result property="ppType" column="ppType" jdbcType="VARCHAR"/>
+        <result property="rc" column="rc" jdbcType="VARCHAR"/>
+        <result property="size" column="size" jdbcType="VARCHAR"/>
+        <result property="min" column="min" jdbcType="DOUBLE"/>
+        <result property="max" column="max" jdbcType="DOUBLE"/>
+        <result property="acWt" column="actual_weight" jdbcType="DOUBLE"/>
+        <result property="checkFlag" column="checkFlag" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="findAll" resultType="com.wxs.springbootweight.entity.WeightHome">
+        select *
+        from weight_home;
+    </select>
+    <select id="findPage" resultType="com.wxs.springbootweight.entity.WeightHome">
+        select * from weight_home
+        <where>
+            gd like concat('%',#{gd},'%') and
+            pin like concat('%',#{pin},'%')
+        </where>
+        limit #{pageNum},#{pageSize}
+    </select>
+    <select id="countTotal" resultType="java.lang.Integer">
+        select count(id)
+        from weight_home;
+    </select>
+    <select id="findCriteria" resultType="com.wxs.springbootweight.entity.WeightHome">
+        select id,gd,type,pin,ppType,rc,size,min,max,acWt,checkFlag,create_time
+        FROM weight_home
+        <where>
+            1=1
+            <if test="gd != null and gd !='' ">
+                and gd like concat('%',#{gd},'%')
+            </if>
+            <if test="pin !=null and pin !='' ">
+                and pin like concat('%',#{pin},'%')
+            </if>
+            <if test="startTime !=null and startTime !='' ">
+                <![CDATA[ and create_time >= #{startTime}]]>
+            </if>
+            <if test="endTime !=null and endTime !='' ">
+                <![CDATA[and create_time <= #{endTime} ]]>
+            </if>
+        </where>
+        limit #{pageNum},#{pageSize}
+    </select>
+
+</mapper>
