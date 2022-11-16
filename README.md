@@ -15,5 +15,5 @@ Java 通过RS232 串口获取体重秤数据流 进行实时显示在前端进�
 * Copy rxtxSerial.dll ---> <JAVA_HOME>\jre\bin
 * Copy rxtxParallel.dll ---> <JAVA_HOME>\jre\bin
 
-
+将 sapjoc3.jar 和 RXTXcomm.jar 加入Maven依赖
 
