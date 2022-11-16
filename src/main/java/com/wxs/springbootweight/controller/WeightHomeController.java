@@ -1,5 +1,6 @@
 package com.wxs.springbootweight.controller;
 
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -147,12 +148,13 @@ public class WeightHomeController {
      **/
     @GetMapping("/sap")
     public ResultVO sap(@RequestParam String gd) {
-        String res = "";
+        String res;
+        String  match = ReUtil.replaceAll(gd,"#","");
         SapConnect sapConnect = new SapConnect();
-        if (gd.indexOf("-") > -1) {
-            res = gd.split("-")[0];
+        if (match.indexOf("-") > -1) {
+            res = match.split("-")[0];
         } else {
-            res = gd;
+            res = match;
         }
 
         HashMap<String, String> map = sapConnect.doPost(res);
