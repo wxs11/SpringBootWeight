@@ -30,6 +30,12 @@ public class WeightHomeController {
     @Resource
     WeightHomeService weightHomeService;
 
+    /**
+     * description: 分页动态查询
+     * @date: 2022/11/17
+     * @param: [pageNum, pageSize, gd, pin, startTime, endTime]
+     * @return: com.wxs.springbootweight.entity.ResultVO<com.baomidou.mybatisplus.core.metadata.IPage < com.wxs.springbootweight.entity.WeightHome>>
+     **/
     @GetMapping("/findPage")
     public ResultVO<IPage<WeightHome>> findPage(@RequestParam Integer pageNum,
                                                 @RequestParam Integer pageSize,
@@ -41,7 +47,12 @@ public class WeightHomeController {
         return ResultUtil.success(page);
     }
 
-
+    /**
+     * description: 查询所有数据
+     * @date: 2022/11/17
+     * @param: []
+     * @return: com.wxs.springbootweight.entity.ResultVO<java.util.List>
+     **/
     @GetMapping("/")
     public ResultVO<List> findAll() {
         List<WeightHome> list = weightHomeService.list();
@@ -137,7 +148,7 @@ public class WeightHomeController {
         writer.close();
 
     }
-    
+
     /**
      * description: 根据工单获取sap数据
      *

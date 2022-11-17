@@ -13,7 +13,7 @@
           icon="el-icon-search"
           style="margin-left: 5px"
           type="primary"
-          @click="load"
+          @click="selectPage"
       >搜索
       </el-button
       >
@@ -213,6 +213,11 @@ export default {
             this.total = res.data.total;
             this.loading = false
           });
+    },
+    // 查询数据
+    selectPage(){
+      this.pageNum = 1;
+      this.load();
     },
     //修改数据
     save() {
