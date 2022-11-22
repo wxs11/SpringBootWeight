@@ -36,7 +36,7 @@ public class SapConnect {
 
 			JCoTable codes = function.getTableParameterList().getTable("GT_CONF");
 			HashMap<String, String> hm = new HashMap<String, String>();
-			if (hm.size() > 0) {
+			if (hm.size() == 0) {
 				hm.put("MATNR", codes.getString("MATNR"));
 				hm.put("PNLSIZE", codes.getString("PNLSIZE"));
 				String pin = hm.get("MATNR");
