@@ -327,9 +327,10 @@ export default {
         });
     },
     getAcWT() {
-      this.request.get("/msg/getAcWt").then((res) => {
-        //判断传入值是否与后台值一致
-        var newN = parseInt( res.data);
+      //从缓存取出称重值
+      var res = JSON.parse(localStorage.getItem("acwt"));
+        //判断传入值是否一致
+        var newN = parseInt(res);
         // console.log("xz：", this.xz, newN, this.cTime);
         const min = parseInt(this.xz) - 1;
         const max = parseInt(this.xz) + 1;
@@ -338,8 +339,23 @@ export default {
         } else {
           this.xz = newN;
         }
-      });
+        //清除acwt缓存
+// localStorage.removeItem("acwt");
     },
+    // getAcWT() {
+    //   this.request.get("/msg/getAcWt").then((res) => {
+    //     //判断传入值是否与后台值一致
+    //     var newN = parseInt( res.data);
+    //     // console.log("xz：", this.xz, newN, this.cTime);
+    //     const min = parseInt(this.xz) - 1;
+    //     const max = parseInt(this.xz) + 1;
+    //     if (newN >= min && newN <= max) {
+    //       this.form.acWt = newN
+    //     } else {
+    //       this.xz = newN;
+    //     }
+    //   });
+    // },
     changeBut() {
       if (this.form.checkFlag == "NG") {
         return "color:red";

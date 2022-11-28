@@ -26,9 +26,9 @@ public class SAPCon {
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT,
                 "100"); // SAP集团
         connectProperties.setProperty(DestinationDataProvider.JCO_USER,
-                "MIS-GUOXJ"); // SAP用户名 GUOXJ
+                "MIS-DONGYU"); // SAP用户名 GUOXJ
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD,
-                "a44444"); // 密码 a44444
+                "dong1000"); // 密码 a44444
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH"); // 登录语言:ZH EN
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3"); // 最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10"); // 最大连接线程
@@ -38,13 +38,9 @@ public class SAPCon {
         createDataFile(ABAP_AS_POOLED, "jcoDestination", connectProperties);
     }
 
-    /**
-     * 创建SAP接口属性文件。
-     *
-     * @param name       ABAP管道名称
-     * @param suffix     属性文件后缀
-     * @param properties 属性文件内容
-     */
+
+
+
     private static void createDataFile(String name, String suffix, Properties properties) {
         File cfg = new File(name + "." + suffix);
         if (cfg.exists()) {
@@ -70,7 +66,7 @@ public class SAPCon {
         try {
             destination = JCoDestinationManager.getDestination(ABAP_AS_POOLED);
         } catch (JCoException e) {
-            System.out.println("Connect SAP fault, error msg: " + e.toString());
+            System.out.println("Connect SAP fault, error msg: " + e);
         }
         return destination;
     }

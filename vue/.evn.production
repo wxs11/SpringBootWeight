@@ -1,0 +1,5 @@
+#  生产环境标记 package.json用
+VUE_APP_MODE = 'production'
+NODE_ENV = 'production'
+#  配置代理；对应Nginx中的server的域名/IP配置
+VUE_APP_BASE_API = 'http://172.16.18.63:9090/api'

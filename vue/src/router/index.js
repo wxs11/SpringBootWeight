@@ -10,6 +10,7 @@ VueRouter.prototype.push = function push(location) {
     return originalPush.call(this, location).catch(err => err)
 }
 
+
 const routes = [
     {
         path: '/',
@@ -35,15 +36,38 @@ const routes = [
                 name: 'maintain',
                 component: () => import( '../views/Maintain.vue'),
                 meta: {title: '料号资料维护', breadNumber: 3},
-            }
+            },
+            
 
         ],
     },
+    {
+        path: '/',
+        name: 'set',
+        component: () => import( '../views/Manage.vue'),
+        meta: {title: '框架主体'},
+        redirect: "/serialport",
+        children: [
+            {
+                path: 'serialport',
+                name: 'serialport',
+                component: () => import( '../views/SerialPort.vue'),
+                meta: {
+                title: '串口',
+                breadNumber: 1,
+                keepAlive: true
+             },
+            
+            }
+        ]
+    }
+
 
 ]
 
 const router = new VueRouter({
-    routes
+    routes,
+    mode: 'history'
 })
 
 export default router

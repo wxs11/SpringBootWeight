@@ -1,7 +1,11 @@
 import axios from 'axios'
 
+const apis = {
+    production: 'http://172.16.18.63:9090/api', // 线上 (生成环境)
+    development: 'http://localhost:9090/api', // 本地 (开发环境)
+  }
 const request = axios.create({
-    baseURL: 'http://localhost:9090',  // 注意！！ 这里是全局统一加上了 '/api' 前缀，也就是说所有接口都会加上'/api'前缀在，页面里面写接口的时候就不要加 '/api'了，否则会出现2个'/api'，类似 '/api/api/user'这样的报错，切记！！！
+    baseURL: process.env.NODE_ENV === 'production' ? apis.production : apis.development, 
     timeout: 5000
 })
 

@@ -31,9 +31,10 @@
       <!-- <el-button type="danger" icon="el-icon-delete">批量删除</el-button> -->
       <el-upload
           :on-success="handleExcelImportSuccess"
+          :on-error="handleExcelImportError"
           :show-file-list="false"
           accept=".xlsx"
-          action="http://localhost:9090/msg/import"
+          :action= uploadUrl
           style="display: inline-block; margin-right: 5px;"
       >
         <el-button icon="el-icon-bottom" type="primary">导入</el-button>
@@ -191,6 +192,7 @@ export default {
       dialogFormVisible: false,
       form: {},
       loading: false,
+      uploadUrl:process.env.VUE_APP_BASE_API + "/msg/import"
     };
   },
   created() {
@@ -248,7 +250,7 @@ export default {
     },
     //删除数据
     handleDelete(id) {
-      this.request.delete("msg/deleteById/" + id).then((res) => {
+      this.request.delete("/msg/deleteById/" + id).then((res) => {
         if (res) {
           this.$notify({
             title: "成功",
@@ -279,7 +281,7 @@ export default {
     },
     // 导出数据
     expMsg() {
-      window.open("http://localhost:9090/msg/exMsg");
+      window.open( process.env.VUE_APP_BASE_API + "/msg/exMsg");
     },
     // 导入
     handleExcelImportSuccess() {
@@ -290,6 +292,13 @@ export default {
       });
       this.load()
     },
+    handleExcelImportError(){
+      this.$notify({
+        title: "失败",
+        message: "导入失败",
+        type: "error",
+      });
+    }
   },
 };
 </script>
