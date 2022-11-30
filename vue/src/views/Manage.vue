@@ -15,6 +15,7 @@
       <el-container>
         <el-header
             style=" border-bottom: 1px solid #ccc; ">
+            <!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> -->
           <HeaderVue :collapse="collapse" :collapseBtnClass="collapseBtnClass"/>
         </el-header>
 

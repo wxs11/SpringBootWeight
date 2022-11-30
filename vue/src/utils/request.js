@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const apis = {
     production: 'http://172.16.18.63:9090/api', // 线上 (生成环境)
-    development: 'http://localhost:9090/api', // 本地 (开发环境)
+    development:'http://172.16.224.182:9090/api', // 本地 (开发环境)
   }
 const request = axios.create({
     baseURL: process.env.NODE_ENV === 'production' ? apis.production : apis.development, 

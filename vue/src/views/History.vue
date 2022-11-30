@@ -220,9 +220,10 @@ export default {
     },
     // 导出
     exportMsg() {
-      console.log(process.env.VUE_APP_BASE_API)
-      window.open( process.env.VUE_APP_BASE_API + "/home/exHistory")
-      // window.open("http://localhost:9090/api/home/exHistory")
+    var  production ="http://172.16.18.63:9090/api" // 线上 (生成环境)
+    var  development= "http://localhost:9090/api" // 本地 (开发环境)
+    var url = process.env.NODE_ENV === 'production' ? production : development
+      window.open( url + "/home/exHistory")
     },
     // 设置数据为NG的显示状态
     tableRowClassName(row) {

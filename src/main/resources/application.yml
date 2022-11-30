@@ -1,7 +1,13 @@
 server:
   port: 9090
+  ssl:
+    key-store: classpath:server.pkcs12
+    key-store-password: 123456
+    keyStoreType: pkcs12
+    enabled: true
   servlet:
     context-path: /api
+
 spring:
   datasource:
 #    url: jdbc:mysql://localhost:3306/weight?characterEncoding=utf-8&serverTimezone=Asia/Shanghai

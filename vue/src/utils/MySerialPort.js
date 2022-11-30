@@ -99,13 +99,6 @@ export default class MySerialPort {
             break;
           }
           tostr = this.Uint8ArrayToString(value)
-          // console.log("长度",tostr.length);
-          // if(tostr.length >0 && tostr.length<12){
-          //   tostr +=tostr
-          // }
-          // else if(tostr.length == 12){
-          //   tostr = (~tostr & 0xff) + 1;
-          // }
           for (var a = 0; a < 5; a++) {
             checksum +=tostr 
           }
