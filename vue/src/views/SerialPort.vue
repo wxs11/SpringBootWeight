@@ -48,7 +48,7 @@
                 v-model="form.baudRate"
                 :fetch-suggestions="querySearch"
                 placeholder="请输入波特率"
-                :disabled="isDisable"
+                :disabled="handleDisable"
               >
                 <i class="el-icon-edit el-input__icon" slot="suffix"> </i>
                 <template slot-scope="{ item }">
@@ -61,7 +61,7 @@
               <el-select
                 v-model="form.dataBits"
                 placeholder="请选择数据位"
-                :disabled="isDisable"
+                :disabled="handleDisable"
               >
                 <el-option label="7" value="7"></el-option>
                 <el-option label="8" value="8"></el-option>
@@ -71,7 +71,7 @@
               <el-select
                 v-model="form.stopBits"
                 placeholder="请选择停止位"
-                :disabled="isDisable"
+                :disabled="handleDisable"
               >
                 <el-option label="1" value="1"></el-option>
                 <el-option label="2" value="2"></el-option>
@@ -82,7 +82,7 @@
               <el-select
                 v-model="form.parity"
                 placeholder="请选择校验位"
-                :disabled="isDisable"
+                :disabled="handleDisable"
               >
                 <el-option label="None" value="none"></el-option>
                 <el-option label="Even" value="even"></el-option>
@@ -94,7 +94,7 @@
               <el-select
                 v-model="form.flowControl"
                 placeholder="请选择流控制"
-                :disabled="isDisable"
+                :disabled="handleDisable"
               >
                 <el-option label="None" value="none"></el-option>
                 <el-option label="HardWare" value="hardware"></el-option>
@@ -157,9 +157,10 @@
 </template>
    
   <script>
-import MySerialPort from "../utils/MySerialPort";
-import USBDevice from "../utils/usb.json";
-export default {
+  import MySerialPort from "../utils/MySerialPort";
+  import USBDevice from "../utils/usb.json";
+
+  export default {
   data() {
     return {
       input: "",
@@ -179,8 +180,10 @@ export default {
       btnText: "连接串口",
       restaurants: [],
       portsList: [],
+      handleDisable: true,
       isShowSendArea: false,
       readType: 1,
+      
       times: 0,
       temp: 0,
     };
@@ -280,9 +283,6 @@ export default {
           // strArr.push(hex.toString(16).toLocaleUpperCase());
           body.push(hex);
         }
-        // if (typeof body[body.length - 1] === "string") {
-        //   body.push("\r\n");
-        //   }
       }
       return body.join("");
     },
@@ -291,8 +291,10 @@ export default {
       let s = this.getArray();
       let list = s.split("+");
       //记录截取的字符串信息
-      var kong = list[5].substring(0, 6);
-      // console.log(kong)
+      if(list.length < 5){
+      }else{
+        var kong = list[5].substring(0, 6);
+        // console.log(kong)
       //判断是否包含空格 包含则不进行操作
       if (kong.includes(" ") == false) {
         let res = parseInt(list[5].substring(0, 6));
@@ -305,13 +307,15 @@ export default {
           this.temp = res;
         }
         //如果相等的次数大于2则确认值并传给acwt
-        if (this.times > 2) {
+        if (this.times >= 2) {
           this.form.acwt = this.temp;
           this.times = 0;
           //将称重值传入到缓存
           localStorage.setItem("acwt", JSON.stringify(this.form.acwt));
         }
       }
+      }
+      
     },
 
     //连接

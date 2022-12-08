@@ -1,22 +1,19 @@
 <template>
   <el-menu
-      :collapse="isCollapse"
-      :collapse-transition="false"
-      :default-openeds="['1']"
-      :unique-opened="false"
-      background-color="rgb(48,65,86)"
-      router
-      style="min-height: 100vh; overflow-x: hidden"
-      text-color="#fff"
-
+    :collapse="isCollapse"
+    :collapse-transition="false"
+    :default-openeds="['1']"
+    :unique-opened="false"
+    background-color="rgb(48,65,86)"
+    router
+    style="min-height: 100vh; overflow-x: hidden"
+    text-color="#fff"
   >
     <div
-        class="block"
-        style="height: 60px; line-height: 60px; text-align: center"
+      class="block"
+      style="height: 60px; line-height: 60px; text-align: center"
     >
-            <span v-show="!isCollapse" style="color: white"
-            >料号称重信息管理</span
-            >
+      <span v-show="!isCollapse" style="color: white">料号称重信息管理</span>
     </div>
 
     <el-submenu index="1">
@@ -42,12 +39,10 @@
 export default {
   name: "Aside",
   props: {
-    isCollapse: Boolean
-  }
-
-}
+    isCollapse: Boolean,
+  },
+};
 </script>
 
 <style>
-
 </style>

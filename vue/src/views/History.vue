@@ -206,6 +206,7 @@ export default {
     reset() {
       this.gd = "";
       this.pin = "";
+      this.ctime = [];
       this.startTime = "";
       this.endTime = "";
     },

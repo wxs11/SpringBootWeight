@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wxs.springbootweight.entity.Msg;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author xiaoshuai.wei
@@ -21,8 +20,16 @@ public interface MsgMapper extends BaseMapper<Msg> {
      * @param: [size] 尺寸
      * @return: java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
      **/
-    List<Map<String, Object>> getPPMaps(String size);
+    List<String> getPPTypes(String size);
+    //    List<Map<String, Object>> getPPMaps(String size);
 
+    /**
+     * description: 根据ppType获取对应类型的rc值
+     * @date: 2022/12/7
+     * @param: [ppType]
+     * @return: java.util.List<java.lang.String>
+     **/
+    List<String> getRcs(String ppType ,String size);
 
     /**
      * description: 根据id查询标准重量区间
@@ -31,7 +38,7 @@ public interface MsgMapper extends BaseMapper<Msg> {
      * @param: [id] id
      * @return: java.util.List<com.wxs.springbootweight.entity.Msg>
      **/
-    List<Msg> getBzWt(Integer id, String pin);
+    List<Msg> getBzWt(String ppType, String rc,String size);
 }
 
 

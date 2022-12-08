@@ -21,14 +21,14 @@ public class SAPCon {
     static {
         Properties connectProperties = new Properties();
         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST,
-                "172.16.200.14");// 服务器
-        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "20"); // 系统编号
+                "172.16.200.18");// 服务器
+        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "30"); // 系统编号
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT,
                 "100"); // SAP集团
         connectProperties.setProperty(DestinationDataProvider.JCO_USER,
-                "MIS-DONGYU"); // SAP用户名 GUOXJ
+                "GD-SERVICE"); // SAP用户名 GUOXJ
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD,
-                "dong1000"); // 密码 a44444
+                "Service123"); // 密码 a44444
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH"); // 登录语言:ZH EN
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "3"); // 最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10"); // 最大连接线程

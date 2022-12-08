@@ -1,9 +1,9 @@
 <template>
   <div style="display: flex">
-    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px"  >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="工单：" prop="gd">
+          <el-form-item label="工单：" prop="gd"  >
             <el-input
               v-model="form.gd"
               clearable
@@ -23,12 +23,11 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :offset="2" :span="8">
-          <el-form-item label="经*纬：">
+        <el-col  :span="8">
+          <el-form-item label="经*纬：" label-width="100px">
             <el-input
               v-model="form.size"
               disabled
-              style="width: 200px"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -37,28 +36,30 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="称重类型：">
-            <el-select
-              v-model="form.type"
-              clearable
-              filterable
-              placeholder="请选择"
+            <el-input
+            v-if="(handleTypeLable ==1)"
+              type="text"
               size="small"
-              style="width: 180px"
               @change="handlePPType"
+              @click.native="changeLabel"
+              value="PP"
             >
-              <el-option
-                v-for="item in typeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
+            </el-input>
+            <el-input
+              type="text"
+              size="small"
+              @change="handlePPType"
+              @click.native="changeLabel"
+              v-else
+              value="料号"
+            >
+            </el-input>
+            
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
-          <el-form-item label="PP型号：" label-width="180px">
+        <el-col :span="8" >
+          <el-form-item label="PP型号：" label-width="100px">
             <el-select
               v-model="form.ppType"
               :disabled="dis"
@@ -66,16 +67,39 @@
               filterable
               placeholder="请选择"
               size="small"
-              style="width: 180px"
-              @change="selectOne"
               @focus="getPPOptions"
             >
               <el-option
-                v-for="item in ppOptions"
-                :key="item[1]"
+                v-for=" item in ppOptions"
+                :key="item.id"
                 ref="mySelected"
-                :label="item[0]"
-                :value="item[1]"
+                :label="item.label"
+                :value="item.label"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      
+        <el-col :span="8" >
+          <el-form-item label="PP含胶量：" label-width="100px">
+            <el-select
+              v-model="form.rc"
+              :disabled="dis"
+              clearable
+              filterable
+              placeholder="请选择"
+              size="small"
+              style="width: 180px"
+              @change="selectOne"
+              @focus="getRcOptions"
+            >
+              <el-option
+                v-for="item in rcOptions"
+                :key="item.id"
+                ref="mySelected"
+                :label="item.label"
+                :value="item.label"
               >
               </el-option>
             </el-select>
@@ -85,12 +109,13 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="标准重量区间：" prop="min">
-            <el-input v-model="form.min" disabled style="width: 150px">
+            <el-input v-model="form.min" disabled style="width: 150px;">
               <template slot="append">G</template>
             </el-input>
+            <span class="line" style="margin-left: 20px;">-</span>
           </el-form-item>
         </el-col>
-        <el-col :offset="2" :span="1" class="line">-</el-col>
+        <!-- <el-col :span="1" class="line">-</el-col> -->
         <el-col :span="8">
           <el-input v-model="form.max" disabled style="width: 150px">
             <template slot="append">G</template>
@@ -104,25 +129,27 @@
               <template slot="append">G</template>
             </el-input>
           </el-form-item>
-        </el-col>
-        <el-col :span="8" :offset="8">
-          <span
-            type="text"
-            title="form.checkFlag"
-            :style="changeBut(form.checkFlag)"
-            style="font-size: 50px"
-            size="200px"
-            :v-model="textVu"
-            >{{ textVu }}</span
-          >
-        </el-col>
-      </el-row>
-      <el-button
+          <el-button
         style="margin-left: 200px; width: 100px"
         type="primary"
         @click="save('form')"
         >保存
       </el-button>
+        </el-col>
+        <el-col :span="18" :offset="18">
+          <audio controls="controls" hidden src="../assets/error.mp3" ref="audio"></audio>
+          <span
+            type="text"
+            title="form.checkFlag"
+            :style="changeBut(form.checkFlag)"
+            style="font-size: 100px "
+            size="1000px"
+            :v-model="textVu"
+            >{{ textVu }}</span
+          >
+        </el-col>
+      </el-row>
+      
     </el-form>
   </div>
 </template>
@@ -138,7 +165,7 @@ export default {
         pin: " ",
         ppType: "",
         rc: "",
-        type: "",
+        type: "1",
         min: "",
         max: "",
         acWt: "",
@@ -159,17 +186,17 @@ export default {
         },
       ],
       ppOptions: [],
+      rcOptions: [],
       pin: "",
+      handleTypeLable:1,
       xz: 0,
       dis: false,
       textVu: "",
     };
   },
   created() {
-    //将料号类型设定为默认PP
-    this.form.type = this.typeOptions[0].value;
-    //每隔1500毫秒获取一次重量数据
-    setInterval(this.getAcWT, 1000);
+    //每隔500毫秒获取一次重量数据
+    setInterval(this.getAcWT, 500);
   },
 
   //对acWt 实际重量进行实时监听 如果变化则判断
@@ -183,10 +210,10 @@ export default {
           if (acWt > 5) {
             if (acWt >= min && acWt <= max) {
               this.form.checkFlag = "OK";
+              this.textVu = "重量符合";
               this.$message({
                 message: "重量符合要求",
                 type: "success",
-                
               });
             } else if (acWt < min) {
               this.form.checkFlag = "NG";
@@ -195,6 +222,8 @@ export default {
                 message: "重量不符要求",
                 type: "warning",
               });
+              this.$refs.audio.currentTime = 0; //从头开始播放提示音
+              this.$refs.audio.play(); //播放
             } else {
               this.form.checkFlag = "NG";
               this.textVu = "超上限";
@@ -202,6 +231,8 @@ export default {
                 message: "重量不符要求",
                 type: "warning",
               });
+              this.$refs.audio.currentTime = 0; //从头开始播放提示音
+              this.$refs.audio.play(); //播放
             }
               this.save('form')
           }
@@ -244,7 +275,8 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res); //查看从sap获取的数据
+           //查看从sap获取的数据
+          // console.log(res);
           if (res.code === 201) {
             this.$notify({
               title: "警告",
@@ -257,6 +289,23 @@ export default {
           }
         });
     },
+    //下拉框点击切换  1 PP 2料号
+    changeLabel(){
+      if( this.form.type === "1"){
+        this.form.type = "2"
+        this.form.ppType = ""
+        this.form.rc = ""
+        this.form.min= ""
+        this.form.max= ""
+        this.handlePPType()
+        this.handleTypeLable = 2
+      }else{
+        this.form.type = "1"
+        this.handlePPType()
+        this.handleTypeLable = 1
+      }
+      
+    },
     //查询对应料号的重量区间
     handlePPType() {
       if (this.form.type === "2") {
@@ -264,8 +313,9 @@ export default {
         this.request
           .get("/msg/getBzWt", {
             params: {
-              id: "",
-              pin: this.form.pin,
+              ppType: this.form.pin,
+              rc:"",
+              size:""
             },
           })
           .then((res) => {
@@ -277,7 +327,7 @@ export default {
               this.$message({
                 message: "没有当前数据",
                 type: "warning",
-                duration: 3500,
+                duration: 3000,
               });
             } else {
               this.form.min = res.data[0].min;
@@ -293,37 +343,59 @@ export default {
     //获取数据库对应PP下拉框数据
     getPPOptions() {
       this.request
-        .get("/msg/getPPMaps", {
+        .get("/msg/getPPTypes", {
           params: {
             size: this.form.size,
           },
         })
         .then((res) => {
-          // console.log('总条'+res.data)
           this.ppOptions.length = 0;
           var result = res.data;
-          for (var i in result) {
-            var pp = result[i].split("+");
-            this.ppOptions.push(pp);
+          for(var i in result){
+            this.ppOptions.push({id:i, label:result[i]})
           }
         })
         .catch((error) => {
           console.log(error);
         });
     },
+    //获取数据库对应PP含胶量rc值
+    getRcOptions(){
+      this.request.get("msg/getRcs",{
+        params: {
+          ppType:this.form.ppType,
+          size : this.form.size
+        }
+      }).then(res =>{
+        this.rcOptions.length = 0;
+        var result = res.data;
+          for(var i in result){
+            this.rcOptions.push({id:i,label:result[i]})
+          }
+      })
+    },
     //选择PP下拉框数据后将数据放入对应输入框
     selectOne() {
       this.request
         .get("/msg/getBzWt", {
           params: {
-            id: this.form.ppType,
+            ppType: this.form.ppType,
+            rc:this.form.rc,
+            size:this.form.size
           },
         })
         .then((res) => {
+          // console.log(res)
+          if(res.data.length == 0){
+            this.$message({
+                message: "没有当前数据",
+                type: "warning",
+                duration: 3000,
+              });
+          }else{
           this.form.min = res.data[0].min;
           this.form.max = res.data[0].max;
-          this.form.rc = res.data[0].rc;
-          this.form.ppType = res.data[0].ppType;
+          }
         });
     },
     getAcWT() {
@@ -340,8 +412,9 @@ export default {
           this.xz = newN;
         }
         //清除acwt缓存
-// localStorage.removeItem("acwt");
+      localStorage.removeItem("acwt");
     },
+    //后端
     // getAcWT() {
     //   this.request.get("/msg/getAcWt").then((res) => {
     //     //判断传入值是否与后台值一致
@@ -368,4 +441,8 @@ export default {
 </script>
 
 <style>
+.item .el-form-item__label{
+    font-size: 20px;
+    font-family: "MicrosoftYaHeiLight", "微软雅黑 Light", "微软雅黑", sans-serif;
+}
 </style>

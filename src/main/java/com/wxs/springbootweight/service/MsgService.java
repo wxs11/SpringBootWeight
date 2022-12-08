@@ -18,7 +18,11 @@ public interface MsgService extends IService<Msg> {
 
      boolean saveOrUpdateMsg(Msg msg);
 
-     List getPPMaps(String size);
+//     List getPPMaps(String size);
 
-     List<Msg> getBzWt(Integer id, String pin);
+     List<String> getPPTypes(String size);
+
+     List<String> getRcs(String ppType,String size);
+
+     List<Msg> getBzWt(String ppType, String rc,String size);
 }

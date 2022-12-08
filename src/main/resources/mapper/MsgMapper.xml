@@ -18,22 +18,44 @@
         id,type,ppType,size,
         rc,min,max
     </sql>
-    <select id="getPPMaps" resultType="java.util.Map">
-        select id, ppType, rc
-        from msg
-        where type = '1'
-          and size = #{size}
-    </select>
-    <select id="getBzWt" resultType="com.wxs.springbootweight.entity.Msg">
-        select ppType,rc,min,max
+<!--    <select id="getPPMaps" resultType="java.util.Map">-->
+<!--        select id, ppType, rc-->
+<!--        from msg-->
+<!--        where type = '1'-->
+<!--          and size = #{size}-->
+<!--    </select>-->
+    <select id="getPPTypes" resultType="java.lang.String">
+        select distinct ppType
         from msg
         <where>
-            <if test="id != null and id !='' ">
-                and id = #{id}
+            type = '1'
+            and size = #{size}
+        </where>
+    </select>
+
+    <select id="getRcs" resultType="java.lang.String">
+        SELECT DISTINCT rc
+        FROM msg
+       <where>
+           type ='1'
+           and ppType = #{ppType}
+            and size = #{size}
+       </where>
+    </select>
+
+    <select id="getBzWt" resultType="com.wxs.springbootweight.entity.Msg">
+        select min,max
+        from msg
+        <where>
+                 ppType = #{ppType}
+            <if test="rc != null and rc !='' ">
+                and rc = #{rc}
             </if>
-            <if test="pin != null and pin !='' ">
-                and ppType = #{pin}
+
+            <if test="size != null and size !='' ">
+                and size = #{size}
             </if>
+
         </where>
     </select>
 

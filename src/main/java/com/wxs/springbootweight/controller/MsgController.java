@@ -89,13 +89,23 @@ public class MsgController {
      * @param: [size]
      * @return: com.wxs.springbootweight.entity.ResultVO<java.util.List>
      **/
-    @GetMapping("/getPPMaps")
-    public ResultVO<List> getPPMaps(@RequestParam String size) {
-        List maps = msgService.getPPMaps(size);
-        if (maps == null) {
-            return ResultUtil.error();
+    @GetMapping("/getPPTypes")
+    public ResultVO<List> getPPTypes(@RequestParam String size) {
+        List<String> maps = msgService.getPPTypes(size);
+        if (maps.size() >= 0) {
+            return ResultUtil.success(maps);
         }
-        return ResultUtil.success(maps);
+        return ResultUtil.error();
+    }
+
+    @GetMapping("/getRcs")
+    public ResultVO<List> getRcs(@RequestParam String ppType,
+                                 @RequestParam String size){
+        List<String> list = msgService.getRcs(ppType,size);
+        if (list.size() >= 0) {
+            return  ResultUtil.success(list);
+        }
+        return ResultUtil.error();
     }
 
     /**
@@ -132,14 +142,14 @@ public class MsgController {
      * @return: java.util.List<com.wxs.springbootweight.entity.Msg>
      **/
     @GetMapping("/getBzWt")
-    public ResultVO getBzWt(@RequestParam(defaultValue = "") Integer id,
-                            @RequestParam(defaultValue = "") String pin) {
-        List<Msg> list = msgService.getBzWt(id, pin);
-        if (list == null) {
-            return ResultUtil.error();
+    public ResultVO getBzWt(@RequestParam String ppType,
+                            @RequestParam String rc,
+                            @RequestParam String size) {
+        List<Msg> list = msgService.getBzWt(ppType, rc,size);
+        if (list.size() >= 0) {
+            return ResultUtil.success(list);
         }
-        return ResultUtil.success(list);
-
+        return ResultUtil.error();
     }
 
     /**

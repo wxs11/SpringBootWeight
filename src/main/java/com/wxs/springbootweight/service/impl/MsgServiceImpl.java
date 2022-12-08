@@ -11,9 +11,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author xiaoshuai.wei
@@ -42,22 +40,34 @@ public class MsgServiceImpl extends ServiceImpl<MsgMapper, Msg>
     }
 
     @Override
-    public List getPPMaps(String size) {
-        List<Map<String, Object>> list = msgMapper.getPPMaps(size);
-        List res = new ArrayList<>();
-        String pp;
-        for (int i = 0; i < list.size(); i++) {
-            pp = list.get(i).get("ppType") + "-" + list.get(i).get("rc") + "+" + list.get(i).get("id");
-            res.add(pp);
-        }
-
-        return res;
+    public List<String> getPPTypes(String size) {
+        List<String> list = msgMapper.getPPTypes(size);
+        return list;
     }
 
     @Override
-    public List<Msg> getBzWt(Integer id, String pin) {
-        return msgMapper.getBzWt(id, pin);
+    public List<String> getRcs(String ppType ,String size) {
+        return msgMapper.getRcs(ppType,size);
     }
+
+    @Override
+    public List<Msg> getBzWt(String ppType, String rc, String size) {
+        return msgMapper.getBzWt(ppType,rc,size);
+    }
+
+//    @Override
+//    public List getPPMaps(String size) {
+//        List<Map<String, Object>> list = msgMapper.getPPMaps(size);
+//        List res = new ArrayList<>();
+//        String pp;
+//        for (int i = 0; i < list.size(); i++) {
+//            pp = list.get(i).get("ppType") + "-" + list.get(i).get("rc") + "+" + list.get(i).get("id");
+//            res.add(pp);
+//        }
+//
+//        return res;
+//    }
+
 }
 
 

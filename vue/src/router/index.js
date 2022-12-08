@@ -23,7 +23,7 @@ const routes = [
                 path: 'home',
                 name: 'home',
                 component: () => import( '../views/Home.vue'),
-                meta: {title: '主页', breadNumber: 1},
+                meta: {title: '主页', breadNumber: 1,keepAlive: true},
             },
             {
                 path: 'history',
