@@ -41,11 +41,12 @@ public class WeightHomeServiceImpl extends ServiceImpl<WeightHomeMapper, WeightH
 
 
     @Override
-    public IPage<WeightHome> findPage(Integer pageNum, Integer pageSize, String gd, String pin, String startTime, String endTime) {
+    public IPage<WeightHome> findPage(Integer pageNum, Integer pageSize, String gd, String pin,String ppType,  String startTime, String endTime) {
         IPage<WeightHome> page = new Page<>(pageNum, pageSize);
         QueryWrapper<WeightHome> queryWrapper1 = new QueryWrapper<>();
         queryWrapper1.lambda().like(Strings.isNotEmpty(gd), WeightHome::getGd, gd)
                 .like(Strings.isNotEmpty(pin), WeightHome::getPin, pin)
+                .like(Strings.isNotEmpty(ppType),WeightHome::getPpType,ppType)
                 .between(Strings.isNotEmpty(startTime), WeightHome::getCreateTime, startTime, endTime);
         queryWrapper1.orderByDesc("create_time");
         return this.page(page, queryWrapper1);

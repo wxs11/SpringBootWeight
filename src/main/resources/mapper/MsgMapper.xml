@@ -15,15 +15,40 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,type,ppType,size,
-        rc,min,max
+                id, type, ppType, size,
+                rc, min, max
     </sql>
-<!--    <select id="getPPMaps" resultType="java.util.Map">-->
-<!--        select id, ppType, rc-->
-<!--        from msg-->
-<!--        where type = '1'-->
-<!--          and size = #{size}-->
-<!--    </select>-->
+    <insert id="insertImp">
+        insert into testImp(type,ppType,size,rc,min,max) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.type},
+            #{item.ppType},
+            #{item.size},
+            #{item.rc},
+            #{item.min},
+            #{item.max})
+        </foreach>
+        <!--存在即可修改下述字段的数据，注意values()中的内容是数据表中相应的字段名-->
+    </insert>
+    <insert id="saveOne">
+        if NOT EXISTS(SELECT 1
+        FROM msg
+        <where>
+            type = #{type}
+            and ppType = #{ppType}
+            <if test="size != null and size !='' ">
+                and size = #{size}
+            </if>
+            <if test="rc != null and rc !='' ">
+                and rc = #{rc}
+            </if>
+            and min = #{min}
+            and max = #{max}
+        </where>
+        )
+        INSERT INTO msg(type, ppType, size, rc, min, max)
+        values (#{type}, #{ppType}, #{size}, #{rc}, #{min}, #{max});
+    </insert>
     <select id="getPPTypes" resultType="java.lang.String">
         select distinct ppType
         from msg
@@ -36,18 +61,18 @@
     <select id="getRcs" resultType="java.lang.String">
         SELECT DISTINCT rc
         FROM msg
-       <where>
-           type ='1'
-           and ppType = #{ppType}
+        <where>
+            type ='1'
+            and ppType = #{ppType}
             and size = #{size}
-       </where>
+        </where>
     </select>
 
     <select id="getBzWt" resultType="com.wxs.springbootweight.entity.Msg">
         select min,max
         from msg
         <where>
-                 ppType = #{ppType}
+            ppType = #{ppType}
             <if test="rc != null and rc !='' ">
                 and rc = #{rc}
             </if>

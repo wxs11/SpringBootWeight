@@ -20,7 +20,7 @@ public interface WeightHomeService extends IService<WeightHome> {
     boolean saveOrUpdateMsg(WeightHome weightHome);
 
 
-    IPage<WeightHome> findPage(Integer pageNum, Integer pageSize, String gd, String pin, String startTime, String endTime);
+    IPage<WeightHome> findPage(Integer pageNum, Integer pageSize, String gd, String pin,String ppType, String startTime, String endTime);
 
     Integer countTotal();
 

@@ -40,6 +40,9 @@
       <el-button icon="el-icon-top" type="primary" @click="expMsg"
         >导出
       </el-button>
+      <el-button icon="el-icon-plus" type="primary" @click="handleSaveOne"
+        >新增
+      </el-button>
     </div>
     <el-table
       v-loading="loading"
@@ -121,8 +124,82 @@
       </el-pagination>
     </div>
 
+    <!-- 新增 -->
+    <el-dialog :visible.sync="dialogFormSave" title="新增数据" width="30%">
+      <el-form
+        :model="saveForm"
+        :rules="rules"
+        ref="saveForm"
+        label-width="120px"
+        size="small"
+      >
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="saveForm.type" style="width: 210px" clearable>
+            <el-option label="PP" value="1"></el-option>
+            <el-option label="料号" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="PP型号/料号" prop="ppType">
+          <el-input
+            v-model="saveForm.ppType"
+            autocomplete="off"
+            style="width: 210px"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="尺寸（经*纬）"
+          prop="size"
+          v-show="this.saveForm.type == 1"
+        >
+          <el-input
+            v-model="saveForm.size"
+            autocomplete="off"
+            clearable
+            style="width: 210px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="含胶量" prop="rc" v-show="this.saveForm.type == 1">
+          <el-input
+            v-model="saveForm.rc"
+            autocomplete="off"
+            clearable
+            style="width: 210px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="最小值" prop="min">
+          <el-input
+            v-model="saveForm.min"
+            autocomplete="off"
+            clearable
+            style="width: 210px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="最大值" prop="max">
+          <el-input
+            v-model="saveForm.max"
+            clearable
+            autocomplete="off"
+            style="width: 210px"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelSave">取 消</el-button>
+        <el-button type="primary" @click="saveOne('saveForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 修改维护 -->
     <el-dialog :visible.sync="dialogFormVisible" title="数据维护" width="35%">
-      <el-form :model="form" label-width="120px" size="small">
+      <el-form
+        :model="form"
+        label-width="120px"
+        size="small"
+        :rules="rules"
+        ref="form"
+      >
         <el-form-item label="类型">
           <el-select v-model="form.type" style="width: 210px">
             <el-option label="PP" value="1"></el-option>
@@ -130,7 +207,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="PP型号/料号">
+        <el-form-item label="PP型号/料号" prop="ppType">
           <el-input
             v-model="form.ppType"
             autocomplete="off"
@@ -144,14 +221,21 @@
             style="width: 210px"
           ></el-input>
         </el-form-item>
-        <el-form-item label="最小值">
+        <el-form-item label="含胶量">
+          <el-input
+            v-model="form.rc"
+            autocomplete="off"
+            style="width: 210px"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="最小值" prop="min">
           <el-input
             v-model="form.min"
             autocomplete="off"
             style="width: 210px"
           ></el-input>
         </el-form-item>
-        <el-form-item label="最大值">
+        <el-form-item label="最大值" prop="max">
           <el-input
             v-model="form.max"
             autocomplete="off"
@@ -161,7 +245,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button type="primary" @click="save('form')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -171,6 +255,34 @@
 export default {
   name: "Maintain",
   data() {
+    var minRule = (rule, value, callback) => {
+      const reg = /^([0-9]|[1-9]\d+$)/;
+      if (!value) {
+        callback(new Error("数值不能为空"));
+      }
+      if (!reg.test(value)) {
+        callback(new Error("请输入正整数"));
+      } else {
+        callback();
+      }
+    };
+    var maxRule = (rule, value, callback) => {
+      const reg = /^([0-9]|[1-9]\d+$)/;
+      if (!value) {
+        callback(new Error("数值不能为空"));
+      }
+      if (!reg.test(value)) {
+        callback(new Error("请输入正整数"));
+      }
+      if (
+        Number(this.saveForm.min) > Number(value) ||
+        Number(this.form.min > Number(value))
+      ) {
+        callback(new Error("最小值不能大于最大值"));
+      } else {
+        callback();
+      }
+    };
     return {
       tableData: [{}],
       pageSize: 10,
@@ -178,9 +290,20 @@ export default {
       total: 0,
       ppType: "",
       dialogFormVisible: false,
+      dialogFormSave: false,
       form: {},
+      saveForm: {},
       loading: false,
       uploadUrl: process.env.VUE_APP_BASE_API + "/msg/import",
+
+      rules: {
+        type: [{ required: true, message: "请选择", trigger: "blur" }],
+        ppType: [
+          { required: true, message: "请输入PP或料号", trigger: "blur" },
+        ],
+        min: [{ required: true, validator: minRule, trigger: "blur" }],
+        max: [{ required: true, validator: maxRule, trigger: "blur" }],
+      },
     };
   },
   created() {
@@ -210,49 +333,168 @@ export default {
       this.load();
     },
     //修改数据
-    save() {
-      this.request.post("/msg/save", this.form).then((res) => {
-        if (res) {
-          this.$notify({
-            title: "成功",
-            message: "修改成功",
-            type: "success",
-          });
-          this.load();
-          this.dialogFormVisible = false;
-        } else {
-          this.$notify.error({
-            title: "错误",
-            message: "保存失败",
+    save(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.request.post("/msg/save", this.form).then((res) => {
+            if (res) {
+              this.$notify({
+                title: "成功",
+                message: "成功",
+                type: "success",
+              });
+              this.load();
+              this.dialogFormVisible = false;
+            } else {
+              this.$notify.error({
+                title: "错误",
+                message: "保存失败",
+              });
+            }
           });
         }
       });
+    },
+    //校验新增口令
+    handleSaveOne() {
+      this.$prompt("请输入密码口令", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputType: "password",
+        inputErrorMessage: "密码不正确",
+        inputValidator: (value) => {
+          if (!value) {
+            return "输入不能为空";
+          }
+          if (value !== "yh753951") {
+            return "密码不正确";
+          }
+        },
+      })
+        .then(({ value }) => {
+          this.$message({
+            type: "success",
+            message: "验证成功",
+          });
+          this.dialogFormSave = true;
+        })
+        .catch(() => {
+          // 取消
+        //  console.log(e)
+        });
+    },
+    // 新增一条数据
+    saveOne(saveForm) {
+      this.$refs[saveForm].validate((valid) => {
+        console.log(this.saveForm);
+        if (valid) {
+          if (
+            this.saveForm.type == "1" &&
+            this.saveForm.rc == "" &&
+            this.saveForm.rc == null
+          ) {
+            this.$message({
+              type: "warning",
+              message: "PP含胶量不能为空",
+            });
+          } else {
+            this.request.post("/msg/saveOne", this.saveForm).then((res) => {
+              if (res.data == 1) {
+                this.$notify({
+                  title: "成功",
+                  message: "成功",
+                  type: "success",
+                });
+                this.load();
+              } else {
+                this.$notify.error({
+                  title: "错误",
+                  message: "数据库中已存在当前数据",
+                });
+              }
+            });
+          }
+        }
+      });
+    },
+    //新增窗口关闭
+    cancelSave() {
+      this.dialogFormSave = false;
+      this.saveForm = {};
     },
     // 清空查询输入框
     reset() {
       this.ppType = "";
     },
+
     handleEdit(row) {
-      this.form = JSON.parse(JSON.stringify(row));
-      this.dialogFormVisible = true;
+      this.$prompt("请输入密码口令", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputType: "password",
+        inputErrorMessage: "密码不正确",
+        inputValidator: (value) => {
+          if (!value) {
+            return "输入不能为空";
+          }
+          if (value !== "yh753951") {
+            return "密码不正确";
+          }
+        },
+      })
+        .then(({ value }) => {
+          this.$message({
+            type: "success",
+            message: "验证成功",
+          });
+          this.form = JSON.parse(JSON.stringify(row));
+          this.dialogFormVisible = true;
+        })
+
+        .catch(() => {
+     
+        });
     },
     //删除数据
     handleDelete(id) {
-      this.request.delete("/msg/deleteById/" + id).then((res) => {
-        if (res) {
-          this.$notify({
-            title: "成功",
-            message: "删除成功",
+      this.$prompt("请输入密码口令", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputType: "password",
+        inputErrorMessage: "密码不正确",
+        inputValidator: (value) => {
+          if (!value) {
+            return "输入不能为空";
+          }
+          if (value !== "yh753951") {
+            return "密码不正确";
+          }
+        },
+      })
+        .then(({ value }) => {
+          this.$message({
             type: "success",
+            message: "验证成功",
           });
-          this.load();
-        } else {
-          this.$notify.error({
-            title: "错误",
-            message: "删除失败",
+          this.request.delete("/msg/deleteById/" + id).then((res) => {
+            if (res) {
+              this.$notify({
+                title: "成功",
+                message: "删除成功",
+                type: "success",
+              });
+              this.load();
+            } else {
+              this.$notify.error({
+                title: "错误",
+                message: "删除失败",
+              });
+            }
           });
-        }
-      });
+        })
+        .catch(() => {
+  
+        });
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
@@ -271,7 +513,8 @@ export default {
     expMsg() {
       var production = "http://172.16.18.63:9090/api"; // 线上 (生成环境)
       var development = "http://localhost:9090/api"; // 本地 (开发环境)
-      var url = process.env.NODE_ENV === "production" ? production : development;
+      var url =
+        process.env.NODE_ENV === "production" ? production : development;
       window.open(url + "/msg/exMsg");
     },
     // 导入

@@ -1,6 +1,8 @@
 package com.wxs.springbootweight.controller;
 
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -10,6 +12,7 @@ import com.wxs.springbootweight.entity.ResultVO;
 import com.wxs.springbootweight.service.MsgService;
 import com.wxs.springbootweight.util.MinGeSerialTest;
 import com.wxs.springbootweight.util.ResultUtil;
+import com.wxs.springbootweight.util.excel.ExcelUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 /**
@@ -66,6 +71,15 @@ public class MsgController {
         return ResultUtil.error();
     }
 
+    @PostMapping("/saveOne")
+    public ResultVO saveOne(@RequestBody Msg msg) {
+        int re = msgService.saveOne(msg);
+        if (re == 0) {
+            return ResultUtil.error();
+        }
+        return ResultUtil.success(re);
+    }
+
     /**
      * description: 根据ID删除记录
      *
@@ -100,10 +114,10 @@ public class MsgController {
 
     @GetMapping("/getRcs")
     public ResultVO<List> getRcs(@RequestParam String ppType,
-                                 @RequestParam String size){
-        List<String> list = msgService.getRcs(ppType,size);
+                                 @RequestParam String size) {
+        List<String> list = msgService.getRcs(ppType, size);
         if (list.size() >= 0) {
-            return  ResultUtil.success(list);
+            return ResultUtil.success(list);
         }
         return ResultUtil.error();
     }
@@ -145,7 +159,7 @@ public class MsgController {
     public ResultVO getBzWt(@RequestParam String ppType,
                             @RequestParam String rc,
                             @RequestParam String size) {
-        List<Msg> list = msgService.getBzWt(ppType, rc,size);
+        List<Msg> list = msgService.getBzWt(ppType, rc, size);
         if (list.size() >= 0) {
             return ResultUtil.success(list);
         }
@@ -229,7 +243,7 @@ public class MsgController {
 //                weightHomes.setAcWt(Double.valueOf(row.get(8).toString()));
 //                weightHomeList.add(weightHomes);
 //            }
-////            System.out.println(weightHomeList);
+//            System.out.println(weightHomeList);
 //            weightHomeService.saveBatch(weightHomeList);
 //            return  ResultUtil.success(weightHomeList);
 //        }catch (Exception e){
@@ -237,5 +251,47 @@ public class MsgController {
 //        }
     }
 
+    @PostMapping("/importPP")
+    public ResultVO<Boolean> impPP(@RequestParam MultipartFile file) throws Exception {
+        TimeInterval timer = DateUtil.timer();
+//        读取的Excell表数据
+        List<Msg> listRead = ExcelUtils.readMultipartFile(file, Msg.class);
+//        数据库的全部数据
+        List<Msg> listAll = msgService.list();
+//        保存需要导入的数据
+        List<Msg> resList = new ArrayList<>();
+//        获取listAll的stream流
+        Stream<Msg> stream = listAll.stream();
+        boolean a;
+        for (Msg msg : listRead) {
+            if (msg.getType().equals("1")) {
+                a = listAll.stream().anyMatch(m -> m.getPpType().equals(msg.getPpType())
+                        && m.getType().equals(msg.getType())
+                        && m.getRc().equals(msg.getRc())
+                        && m.getSize().equals(msg.getSize())
+                        && m.getMin().equals(msg.getMin())
+                        && m.getMax().equals(msg.getMax()));
+                //如果数据不存在则需导入
+            } else {
+                a = listAll.stream().anyMatch(m -> m.getPpType().equals(msg.getPpType())
+                        && m.getType().equals(msg.getType())
+                        && m.getMin().equals(msg.getMin())
+                        && m.getMax().equals(msg.getMax()));
+                //如果数据不存在则需导入
+            }
+            if (!a) {
+                resList.add(msg);
+            }
+        }
+        Boolean res;
+        if (resList.size() > 0) {
+            res = msgService.saveBatch(resList);
+            System.out.println("一共花费时间:" + timer.interval());
+            return ResultUtil.success(res);
+        }else {
+            return ResultUtil.success(false);
+        }
+
+    }
 
 }

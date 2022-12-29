@@ -55,6 +55,11 @@ public class MsgServiceImpl extends ServiceImpl<MsgMapper, Msg>
         return msgMapper.getBzWt(ppType,rc,size);
     }
 
+    @Override
+    public int saveOne(Msg msg) {
+        return msgMapper.saveOne(msg);
+    }
+
 //    @Override
 //    public List getPPMaps(String size) {
 //        List<Map<String, Object>> list = msgMapper.getPPMaps(size);

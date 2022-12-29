@@ -41,9 +41,10 @@ public class WeightHomeController {
                                                 @RequestParam Integer pageSize,
                                                 @RequestParam String gd,
                                                 @RequestParam String pin,
+                                                @RequestParam String ppType,
                                                 @RequestParam String startTime,
                                                 @RequestParam String endTime) {
-        IPage<WeightHome> page = weightHomeService.findPage(pageNum, pageSize, gd, pin, startTime, endTime);
+        IPage<WeightHome> page = weightHomeService.findPage(pageNum, pageSize, gd, pin,ppType, startTime, endTime);
         return ResultUtil.success(page);
     }
 
@@ -127,6 +128,7 @@ public class WeightHomeController {
         writer.addHeaderAlias("最小值", "最小值");
         writer.addHeaderAlias("最大值", "最大值");
         writer.addHeaderAlias("实际重量", "实际重量");
+        writer.addHeaderAlias("检验标准","检验标准");
         writer.addHeaderAlias("创建时间", "创建时间");
 
         // 默认的，未添加alias的属性也会写出，如果想只写出加了别名的字段，可以调用此方法排除之

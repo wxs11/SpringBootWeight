@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wxs.springbootweight.util.excel.ExcelImport;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,31 +27,37 @@ public class Msg implements Serializable {
      * 称重类型("1"PP "2"料号)
      */
     @Alias("称重类型")
+    @ExcelImport("称重类型")
     private String type;
     /**
      * PP型号/料号
      */
     @Alias("PP型号/料号")
+    @ExcelImport("PP型号/料号")
     @TableField(value = "ppType")
     private String ppType;
     /**
      * 尺寸经纬度
      */
     @Alias("经*纬")
+    @ExcelImport("经*纬")
     private String size;
     /**
      * 含胶量
      */
     @Alias("含胶量")
+    @ExcelImport("含胶量")
     private String rc;
     /**
      * 最小值
      */
     @Alias("最小值")
+    @ExcelImport("最小值")
     private Double min;
     /**
      * 最大值
      */
     @Alias("最大值")
+    @ExcelImport("最大值")
     private Double max;
 }

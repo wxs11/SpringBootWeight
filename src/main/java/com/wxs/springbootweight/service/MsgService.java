@@ -25,4 +25,6 @@ public interface MsgService extends IService<Msg> {
      List<String> getRcs(String ppType,String size);
 
      List<Msg> getBzWt(String ppType, String rc,String size);
+
+     int saveOne(Msg msg);
 }

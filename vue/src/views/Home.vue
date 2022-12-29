@@ -1,9 +1,9 @@
 <template>
   <div style="display: flex">
-    <el-form ref="form" :model="form" :rules="rules" label-width="120px"  >
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="工单：" prop="gd"  >
+          <el-form-item label="工单：" prop="gd">
             <el-input
               v-model="form.gd"
               clearable
@@ -23,12 +23,9 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col  :span="8">
+        <el-col :span="8">
           <el-form-item label="经*纬：" label-width="100px">
-            <el-input
-              v-model="form.size"
-              disabled
-            ></el-input>
+            <el-input v-model="form.size" disabled></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -37,7 +34,7 @@
         <el-col :span="8">
           <el-form-item label="称重类型：">
             <el-input
-            v-if="(handleTypeLable ==1)"
+              v-if="handleTypeLable == 1"
               type="text"
               size="small"
               @change="handlePPType"
@@ -54,11 +51,10 @@
               value="料号"
             >
             </el-input>
-            
           </el-form-item>
         </el-col>
 
-        <el-col :span="8" >
+        <el-col :span="8">
           <el-form-item label="PP型号：" label-width="100px">
             <el-select
               v-model="form.ppType"
@@ -70,7 +66,7 @@
               @focus="getPPOptions"
             >
               <el-option
-                v-for=" item in ppOptions"
+                v-for="item in ppOptions"
                 :key="item.id"
                 ref="mySelected"
                 :label="item.label"
@@ -80,8 +76,8 @@
             </el-select>
           </el-form-item>
         </el-col>
-      
-        <el-col :span="8" >
+
+        <el-col :span="8">
           <el-form-item label="PP含胶量：" label-width="100px">
             <el-select
               v-model="form.rc"
@@ -109,10 +105,10 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="标准重量区间：" prop="min">
-            <el-input v-model="form.min" disabled style="width: 150px;">
+            <el-input v-model="form.min" disabled style="width: 150px">
               <template slot="append">G</template>
             </el-input>
-            <span class="line" style="margin-left: 20px;">-</span>
+            <span class="line" style="margin-left: 20px">-</span>
           </el-form-item>
         </el-col>
         <!-- <el-col :span="1" class="line">-</el-col> -->
@@ -130,26 +126,30 @@
             </el-input>
           </el-form-item>
           <el-button
-        style="margin-left: 200px; width: 100px"
-        type="primary"
-        @click="save('form')"
-        >保存
-      </el-button>
+            style="margin-left: 200px; width: 100px"
+            type="primary"
+            @click="save('form')"
+            >保存
+          </el-button>
         </el-col>
         <el-col :span="18" :offset="18">
-          <audio controls="controls" hidden src="../assets/error.mp3" ref="audio"></audio>
+          <audio
+            controls="controls"
+            hidden
+            src="../assets/error.mp3"
+            ref="audio"
+          ></audio>
           <span
             type="text"
             title="form.checkFlag"
             :style="changeBut(form.checkFlag)"
-            style="font-size: 100px "
+            style="font-size: 100px"
             size="1000px"
             :v-model="textVu"
             >{{ textVu }}</span
           >
         </el-col>
       </el-row>
-      
     </el-form>
   </div>
 </template>
@@ -157,12 +157,13 @@
 <script>
 export default {
   name: "Home",
+
   data() {
     return {
       form: {
         gd: "",
         size: "",
-        pin: " ",
+        pin: "",
         ppType: "",
         rc: "",
         type: "1",
@@ -188,15 +189,28 @@ export default {
       ppOptions: [],
       rcOptions: [],
       pin: "",
-      handleTypeLable:1,
+      handleTypeLable: 1,
       xz: 0,
       dis: false,
       textVu: "",
+      timer1: null,
+      timer2: null,
     };
   },
-  created() {
+  //缓存的页面 created 会执行只有一次，activated每次都会执行
+  created() {},
+
+  activated() {
+    //3秒检查一次串口数据
+    this.timer1 = setInterval(this.checkPortMsg, 2000);
     //每隔500毫秒获取一次重量数据
-    setInterval(this.getAcWT, 500);
+    this.timer2 = setInterval(this.getAcWT, 500);
+  },
+  beforeRouteLeave(to, from, next) {
+    window.clearInterval(this.timer1);
+    window.clearInterval(this.timer2);//清除定时器
+    // window.clearInterval() //清除定时器
+    next();
   },
 
   //对acWt 实际重量进行实时监听 如果变化则判断
@@ -234,7 +248,9 @@ export default {
               this.$refs.audio.currentTime = 0; //从头开始播放提示音
               this.$refs.audio.play(); //播放
             }
-              this.save('form')
+            this.save("form");
+          }else{
+            this.textVu = "";
           }
         }
       },
@@ -247,22 +263,22 @@ export default {
       //保存数据
       this.$refs[form].validate((valid) => {
         if (valid) {
-            this.request.post("/home/save", this.form).then((res) => {
-              if (res.code != 201) {
-                this.$notify({
-                  title: "成功",
-                  message: "保存成功",
-                  type: "success",
-                  duration: 3000,
-                });
-              } else {
-                this.$notify.error({
-                  title: "错误",
-                  message: "保存失败",
-                  duration: 3000,
-                });
-              }
-            });
+          this.request.post("/home/save", this.form).then((res) => {
+            if (res.code != 201) {
+              this.$notify({
+                title: "成功",
+                message: "保存成功",
+                type: "success",
+                duration: 3000,
+              });
+            } else {
+              this.$notify.error({
+                title: "错误",
+                message: "保存失败",
+                duration: 3000,
+              });
+            }
+          });
         }
       });
     },
@@ -275,7 +291,7 @@ export default {
           },
         })
         .then((res) => {
-           //查看从sap获取的数据
+          //查看从sap获取的数据
           // console.log(res);
           if (res.code === 201) {
             this.$notify({
@@ -290,21 +306,22 @@ export default {
         });
     },
     //下拉框点击切换  1 PP 2料号
-    changeLabel(){
-      if( this.form.type === "1"){
-        this.form.type = "2"
-        this.form.ppType = ""
-        this.form.rc = ""
-        this.form.min= ""
-        this.form.max= ""
-        this.handlePPType()
-        this.handleTypeLable = 2
-      }else{
-        this.form.type = "1"
-        this.handlePPType()
-        this.handleTypeLable = 1
+    changeLabel() {
+      if (this.form.type === "1") {
+        this.form.type = "2";
+        this.form.ppType = "";
+        this.form.rc = "";
+        this.form.min = "";
+        this.form.max = "";
+        this.handlePPType();
+        this.handleTypeLable = 2;
+      } else {
+        this.form.type = "1";
+        this.form.min = "";
+        this.form.max = "";
+        this.handlePPType();
+        this.handleTypeLable = 1;
       }
-      
     },
     //查询对应料号的重量区间
     handlePPType() {
@@ -314,8 +331,8 @@ export default {
           .get("/msg/getBzWt", {
             params: {
               ppType: this.form.pin,
-              rc:"",
-              size:""
+              rc: "",
+              size: "",
             },
           })
           .then((res) => {
@@ -351,8 +368,8 @@ export default {
         .then((res) => {
           this.ppOptions.length = 0;
           var result = res.data;
-          for(var i in result){
-            this.ppOptions.push({id:i, label:result[i]})
+          for (var i in result) {
+            this.ppOptions.push({ id: i, label: result[i] });
           }
         })
         .catch((error) => {
@@ -360,19 +377,21 @@ export default {
         });
     },
     //获取数据库对应PP含胶量rc值
-    getRcOptions(){
-      this.request.get("msg/getRcs",{
-        params: {
-          ppType:this.form.ppType,
-          size : this.form.size
-        }
-      }).then(res =>{
-        this.rcOptions.length = 0;
-        var result = res.data;
-          for(var i in result){
-            this.rcOptions.push({id:i,label:result[i]})
+    getRcOptions() {
+      this.request
+        .get("msg/getRcs", {
+          params: {
+            ppType: this.form.ppType,
+            size: this.form.size,
+          },
+        })
+        .then((res) => {
+          this.rcOptions.length = 0;
+          var result = res.data;
+          for (var i in result) {
+            this.rcOptions.push({ id: i, label: result[i] });
           }
-      })
+        });
     },
     //选择PP下拉框数据后将数据放入对应输入框
     selectOne() {
@@ -380,38 +399,50 @@ export default {
         .get("/msg/getBzWt", {
           params: {
             ppType: this.form.ppType,
-            rc:this.form.rc,
-            size:this.form.size
+            rc: this.form.rc,
+            size: this.form.size,
           },
         })
         .then((res) => {
           // console.log(res)
-          if(res.data.length == 0){
+          if (res.data.length == 0) {
             this.$message({
-                message: "没有当前数据",
-                type: "warning",
-                duration: 3000,
-              });
-          }else{
-          this.form.min = res.data[0].min;
-          this.form.max = res.data[0].max;
+              message: "没有当前数据",
+              type: "warning",
+              duration: 3000,
+            });
+          } else {
+            this.form.min = res.data[0].min;
+            this.form.max = res.data[0].max;
           }
         });
+    },
+
+    checkPortMsg() {
+      var PortBody = JSON.parse(localStorage.getItem("SerialPortBody"));
+      if (PortBody == null || PortBody.length == 0) {
+        this.$message({
+          message: "串口未连接或未找到数据，请重新刷新串口页面，重新连接",
+          type: "warning",
+          duration: 2000,
+        });
+      }
+      localStorage.removeItem("SerialPortBody");
     },
     getAcWT() {
       //从缓存取出称重值
       var res = JSON.parse(localStorage.getItem("acwt"));
-        //判断传入值是否一致
-        var newN = parseInt(res);
-        // console.log("xz：", this.xz, newN, this.cTime);
-        const min = parseInt(this.xz) - 1;
-        const max = parseInt(this.xz) + 1;
-        if (newN >= min && newN <= max) {
-          this.form.acWt = newN
-        } else {
-          this.xz = newN;
-        }
-        //清除acwt缓存
+      //判断传入值是否一致
+      var newN = parseInt(res);
+      // console.log("xz：", this.xz, newN, this.cTime);
+      const min = parseInt(this.xz) - 1;
+      const max = parseInt(this.xz) + 1;
+      if (newN >= min && newN <= max) {
+        this.form.acWt = newN;
+      } else {
+        this.xz = newN;
+      }
+      //清除acwt缓存
       localStorage.removeItem("acwt");
     },
     //后端
@@ -441,8 +472,8 @@ export default {
 </script>
 
 <style>
-.item .el-form-item__label{
-    font-size: 20px;
-    font-family: "MicrosoftYaHeiLight", "微软雅黑 Light", "微软雅黑", sans-serif;
+.item .el-form-item__label {
+  font-size: 20px;
+  font-family: "MicrosoftYaHeiLight", "微软雅黑 Light", "微软雅黑", sans-serif;
 }
 </style>

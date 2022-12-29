@@ -39,6 +39,23 @@ public interface MsgMapper extends BaseMapper<Msg> {
      * @return: java.util.List<com.wxs.springbootweight.entity.Msg>
      **/
     List<Msg> getBzWt(String ppType, String rc,String size);
+    /**
+     * description: 批量插入数据
+     * @date: 2022/12/13
+     * @param: [list]
+     * @return: java.util.List<com.wxs.springbootweight.entity.Msg>
+     **/
+
+    List<Msg> insertImp(List<Msg> list);
+    /**
+     * description: 新增一条数据库没有的数据 如果有则不插入
+     * @date: 2022/12/13
+     * @param: [msg] msg实体
+     * @return: int
+     **/
+    int saveOne(Msg msg);
+
+
 }
 
 

@@ -22,6 +22,7 @@
         <span slot="title">称重信息</span>
       </template>
       <el-menu-item index="home">主页</el-menu-item>
+      <el-menu-item index="testHome">测试页面</el-menu-item>
       <el-menu-item index="maintain">料号资料维护</el-menu-item>
       <el-menu-item index="history">称重历史记录</el-menu-item>
     </el-submenu>

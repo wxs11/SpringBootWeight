@@ -17,7 +17,7 @@ spring:
 
   #SQL SERVER
       driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-      url: jdbc:sqlserver://172.16.18.63:1433;databaseName=WEIGHT;trustServerCertificate=true
+      url: jdbc:sqlserver://172.16.18.63:1433;databaseName=WEIGHT;trustServerCertificate=true;rewriteBatchedStatements=true
       username: sa
       password: Root1234
 

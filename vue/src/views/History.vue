@@ -17,6 +17,14 @@
           style="width: 200px"
           @input="change($event)"
       ></el-input>
+      <el-input
+          v-model="ppType"
+          class="ml-5"
+          clearable
+          placeholder="请输入PP型号"
+          style="width: 200px"
+          @input="change($event)"
+      ></el-input>
       <el-date-picker
           v-model="ctime"
           class="ml-5"
@@ -68,8 +76,8 @@
       </el-table-column>
       <el-table-column align="center" label="类型" prop="type" width="60">
         <template slot-scope="scope">
-          <span v-if="scope.row.type === '1'">料号</span>
-          <span v-if="scope.row.type === '2'">PP</span>
+          <span v-if="scope.row.type === '1'">PP</span>
+          <span v-if="scope.row.type === '2'">料号</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="工单号" prop="gd">
@@ -84,7 +92,7 @@
       >
         <template slot-scope="scope">
           <el-popover placement="top" trigger="hover">
-            <span v-if="scope.row.type == '2'"
+            <span v-if="scope.row.type == '1'"
             >含胶量：{{ scope.row.rc }}</span
             >
             <div slot="reference" class="name-wrapper">
@@ -144,6 +152,7 @@ export default {
       total: 0,
       gd: "",
       pin: "",
+      ppType:"",
       ctime: [],
       startTime: "",
       endTime: "",
@@ -187,6 +196,7 @@ export default {
               pageSize: this.pageSize,
               gd: this.gd,
               pin: this.pin,
+              ppType:this.ppType,
               startTime: this.startTime,
               endTime: this.endTime,
             },
@@ -206,6 +216,7 @@ export default {
     reset() {
       this.gd = "";
       this.pin = "";
+      this.ppType="";
       this.ctime = [];
       this.startTime = "";
       this.endTime = "";

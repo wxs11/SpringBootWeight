@@ -284,6 +284,7 @@
           body.push(hex);
         }
       }
+      localStorage.setItem("SerialPortBody", JSON.stringify(body));
       return body.join("");
     },
     //转换获取称重数据
