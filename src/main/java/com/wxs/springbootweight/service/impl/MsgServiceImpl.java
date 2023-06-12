@@ -60,18 +60,11 @@ public class MsgServiceImpl extends ServiceImpl<MsgMapper, Msg>
         return msgMapper.saveOne(msg);
     }
 
-//    @Override
-//    public List getPPMaps(String size) {
-//        List<Map<String, Object>> list = msgMapper.getPPMaps(size);
-//        List res = new ArrayList<>();
-//        String pp;
-//        for (int i = 0; i < list.size(); i++) {
-//            pp = list.get(i).get("ppType") + "-" + list.get(i).get("rc") + "+" + list.get(i).get("id");
-//            res.add(pp);
-//        }
-//
-//        return res;
-//    }
+    @Override
+    public boolean insertBatch(List<Msg> list) {
+        return msgMapper.insertBatch(list);
+    }
+
 
 }
 

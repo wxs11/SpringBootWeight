@@ -4,7 +4,7 @@ server:
     key-store: classpath:server.pkcs12
     key-store-password: 123456
     keyStoreType: pkcs12
-    enabled: false
+    enabled: true
   servlet:
     context-path: /api
 

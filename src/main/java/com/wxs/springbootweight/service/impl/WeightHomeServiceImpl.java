@@ -68,13 +68,6 @@ public class WeightHomeServiceImpl extends ServiceImpl<WeightHomeMapper, WeightH
         res.put("records", list);
         res.put("total", total);
         return res;
-//        Page<WeightHome> page = new Page<>(pageNum,pageSize);
-//        LambdaQueryWrapper<WeightHome> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.like(Strings.isNotEmpty(gd),WeightHome::getGd,gd);
-//        queryWrapper.like(Strings.isNotEmpty(pin),WeightHome::getPin,pin);
-//        queryWrapper.eq(Strings.isNotEmpty(startTime),WeightHome::getStartTime,startTime);
-//        queryWrapper.eq(Strings.isNotEmpty(endTime),WeightHome::getEndTime,endTime);
-//        return page(page,queryWrapper);
     }
 }
 

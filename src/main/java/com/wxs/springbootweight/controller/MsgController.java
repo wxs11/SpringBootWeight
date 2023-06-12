@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 /**
@@ -66,7 +65,7 @@ public class MsgController {
     public ResultVO<Boolean> save(@RequestBody Msg msg) {
         boolean re = msgService.saveOrUpdateMsg(msg);
         if (re) {
-            return ResultUtil.success(re);
+            return ResultUtil.success(true);
         }
         return ResultUtil.error();
     }
@@ -91,7 +90,7 @@ public class MsgController {
     public ResultVO<Boolean> deleteById(@PathVariable int id) {
         Boolean re = msgService.removeById(id);
         if (re) {
-            return ResultUtil.success(re);
+            return ResultUtil.success(true);
         }
         return ResultUtil.error();
     }
@@ -106,7 +105,7 @@ public class MsgController {
     @GetMapping("/getPPTypes")
     public ResultVO<List> getPPTypes(@RequestParam String size) {
         List<String> maps = msgService.getPPTypes(size);
-        if (maps.size() >= 0) {
+        if (maps.size() > 0) {
             return ResultUtil.success(maps);
         }
         return ResultUtil.error();
@@ -116,7 +115,7 @@ public class MsgController {
     public ResultVO<List> getRcs(@RequestParam String ppType,
                                  @RequestParam String size) {
         List<String> list = msgService.getRcs(ppType, size);
-        if (list.size() >= 0) {
+        if (list.size() > 0) {
             return ResultUtil.success(list);
         }
         return ResultUtil.error();
@@ -160,7 +159,7 @@ public class MsgController {
                             @RequestParam String rc,
                             @RequestParam String size) {
         List<Msg> list = msgService.getBzWt(ppType, rc, size);
-        if (list.size() >= 0) {
+        if (list.size() > 0) {
             return ResultUtil.success(list);
         }
         return ResultUtil.error();
@@ -254,17 +253,15 @@ public class MsgController {
     @PostMapping("/importPP")
     public ResultVO<Boolean> impPP(@RequestParam MultipartFile file) throws Exception {
         TimeInterval timer = DateUtil.timer();
-//        读取的Excell表数据
+//        读取的Excel表数据
         List<Msg> listRead = ExcelUtils.readMultipartFile(file, Msg.class);
 //        数据库的全部数据
         List<Msg> listAll = msgService.list();
 //        保存需要导入的数据
         List<Msg> resList = new ArrayList<>();
-//        获取listAll的stream流
-        Stream<Msg> stream = listAll.stream();
         boolean a;
         for (Msg msg : listRead) {
-            if (msg.getType().equals("1")) {
+            if ("1".equals(msg.getType())) {
                 a = listAll.stream().anyMatch(m -> m.getPpType().equals(msg.getPpType())
                         && m.getType().equals(msg.getType())
                         && m.getRc().equals(msg.getRc())
@@ -283,15 +280,20 @@ public class MsgController {
                 resList.add(msg);
             }
         }
-        Boolean res;
-        if (resList.size() > 0) {
-            res = msgService.saveBatch(resList);
-            System.out.println("一共花费时间:" + timer.interval());
-            return ResultUtil.success(res);
-        }else {
-            return ResultUtil.success(false);
+        boolean res;
+        try{
+            if (resList.size() > 0) {
+                res = msgService.insertBatch(resList);
+                System.out.println("一共花费时间:" + timer.interval());
+                return ResultUtil.success(res);
+            }else {
+                return ResultUtil.success(false);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
+        return ResultUtil.success(true);
     }
 
 }

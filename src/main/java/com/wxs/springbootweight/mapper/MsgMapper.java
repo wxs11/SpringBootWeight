@@ -45,8 +45,7 @@ public interface MsgMapper extends BaseMapper<Msg> {
      * @param: [list]
      * @return: java.util.List<com.wxs.springbootweight.entity.Msg>
      **/
-
-    List<Msg> insertImp(List<Msg> list);
+    boolean insertBatch(List<Msg> list);
     /**
      * description: 新增一条数据库没有的数据 如果有则不插入
      * @date: 2022/12/13

@@ -84,7 +84,7 @@ public class WeightHomeController {
     public ResultVO<Boolean> save(@RequestBody WeightHome weightHome) {
         boolean re = weightHomeService.saveOrUpdateMsg(weightHome);
         if (re) {
-            return ResultUtil.success(re);
+            return ResultUtil.success(true);
         }
         return ResultUtil.error();
     }
@@ -100,7 +100,7 @@ public class WeightHomeController {
     public ResultVO<Boolean> deleteById(@PathVariable int id) {
         Boolean re = weightHomeService.removeById(id);
         if (re) {
-            return ResultUtil.success(re);
+            return ResultUtil.success(true);
         }
         return ResultUtil.error();
     }

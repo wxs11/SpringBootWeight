@@ -59,7 +59,7 @@
         width="60"
       >
         <template slot-scope="scope">
-          <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
+          <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>    
         </template>
       </el-table-column>
       <el-table-column align="center" label="类型" prop="type" width="80">
@@ -294,7 +294,7 @@ export default {
       form: {},
       saveForm: {},
       loading: false,
-      uploadUrl: process.env.VUE_APP_BASE_API + "/msg/import",
+      uploadUrl: process.env.VUE_APP_BASE_API + "/msg/importPP",
 
       rules: {
         type: [{ required: true, message: "请选择", trigger: "blur" }],
@@ -366,7 +366,7 @@ export default {
           if (!value) {
             return "输入不能为空";
           }
-          if (value !== "yh753951") {
+          if (value !== "123456") {
             return "密码不正确";
           }
         },
@@ -405,6 +405,7 @@ export default {
                   message: "成功",
                   type: "success",
                 });
+                this.cancelSave();
                 this.load();
               } else {
                 this.$notify.error({
@@ -437,7 +438,7 @@ export default {
           if (!value) {
             return "输入不能为空";
           }
-          if (value !== "yh753951") {
+          if (value !== "123456") {
             return "密码不正确";
           }
         },
@@ -466,7 +467,7 @@ export default {
           if (!value) {
             return "输入不能为空";
           }
-          if (value !== "yh753951") {
+          if (value !== "123456") {
             return "密码不正确";
           }
         },

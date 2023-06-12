@@ -27,4 +27,6 @@ public interface MsgService extends IService<Msg> {
      List<Msg> getBzWt(String ppType, String rc,String size);
 
      int saveOne(Msg msg);
+
+     boolean insertBatch(List<Msg> list);
 }

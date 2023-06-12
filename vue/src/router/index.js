@@ -17,23 +17,14 @@ const routes = [
         name: 'manage',
         component: () => import('../views/Manage.vue'),
         meta: { title: '框架主体' },
-        redirect: "/home",
+        redirect: "/testHome",
         children: [
-            {
-                path: 'home',
-                name: 'home',
-                component: () => import('../views/Home.vue'),
-                meta: {
-                    title: '主页', breadNumber: 1,
-                    keepAlive: true
-                },
-            },
             {
                 path: 'testHome',
                 name: 'testHome',
                 component: () => import('../views/TestHome.vue'),
                 meta: {
-                    title: '测试页面', breadNumber: 1,
+                    title: '主页', breadNumber: 1,
                     keepAlive: true
                 },
             },

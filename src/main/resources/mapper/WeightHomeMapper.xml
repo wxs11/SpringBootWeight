@@ -50,7 +50,7 @@
                 <![CDATA[ and create_time >= #{startTime}]]>
             </if>
             <if test="endTime !=null and endTime !='' ">
-                <![CDATA[and create_time <= #{endTime} ]]>
+                <![CDATA[ and create_time <= #{endTime} ]]>
             </if>
         </where>
         limit #{pageNum},#{pageSize}
